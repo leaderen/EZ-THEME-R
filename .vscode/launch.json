@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "运行开发服务器",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "serve"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        }
+    ]
+}

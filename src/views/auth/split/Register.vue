@@ -476,6 +476,12 @@
           <div class="auth-footer">
 
             <div class="auth-divider">
+              <span class="auth-divider-text">{{ $t('auth.thirdPartyLogin') }}</span>
+            </div>
+
+            <ThirdPartyLogin :config="config" />
+
+            <div class="auth-divider">
 
               <span class="auth-divider-text">{{ $t('auth.alreadyHaveAccount') }}</span>
 
@@ -623,6 +629,8 @@ import { shouldShowAuthPopup } from '@/utils/authPopupState';
 
 import { useNavigator } from "@/composables/useNavigator";
 
+import ThirdPartyLogin from '../components/ThirdPartyLogin.vue';
+
 
 
 window.onCaptchaVerified = function(response) {
@@ -711,7 +719,9 @@ export default {
 
     DomainAuthAlert,
 
-    AuthPopup
+    AuthPopup,
+
+    ThirdPartyLogin,
 
   },
 
@@ -780,7 +790,27 @@ export default {
 
 
 
+    // 监听来自验证窗口的消息
+    const handleMessage = (event) => {
+      console.log('收到消息:', event);
+      // 验证消息来源
+      if (event.origin !== window.location.origin) {
+        console.log('消息来源不匹配:', event.origin, window.location.origin);
+        return;
+      }
 
+      if (event.data && event.data.type === 'oauth_login_success') {
+        console.log('收到OAuth登录成功消息:', event.data);
+        const { token, is_admin, auth_data } = event.data.data;
+        if (token) {
+          localStorage.setItem('token', token);
+          localStorage.setItem('is_admin', is_admin);
+          localStorage.setItem('auth_data', auth_data);
+
+          window.location.reload();
+        }
+      }
+    };
 
 
 
@@ -1611,11 +1641,8 @@ export default {
 
 
     onMounted(() => {
-
-
-
-
-
+      // 监听来自验证窗口的消息
+      window.addEventListener('message', handleMessage);
       const urlParams = new URLSearchParams(window.location.search);
 
       const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
@@ -1848,7 +1875,7 @@ export default {
 
 
     onBeforeUnmount(() => {
-
+      window.removeEventListener('message', handleMessage);
       document.removeEventListener('click', handleClickOutside);
 
 
@@ -2343,6 +2370,8 @@ export default {
       handleAuthPopupClose,
 
       goTo,
+
+      handleMessage,
 
     };
 

@@ -17,8 +17,5 @@ build/
 .DS_Store
 Thumbs.db
 
-# 忽略 VSCode 工作区配置（可选）
-.vscode/
-
 # 忽略 IDE 临时文件（如 WebStorm/JetBrains 系）
 .idea/

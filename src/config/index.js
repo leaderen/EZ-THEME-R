@@ -5,7 +5,7 @@
  */
 import { buyConfirm, getAppLink, getThemeColor, shopPopup, ticketPopup, userKnow } from "@/config/constant";
 
-export const config  = {
+export const config = {
     // 面板类型配置 - 请选择您使用的面板类型
     PANEL_TYPE: 'Xiao-V2board', // 可选值: 'V2board', 'Xiao-V2board' 或 'Xboard'
     // 说明:
@@ -22,15 +22,15 @@ export const config  = {
     API_CONFIG: {
         // API URL获取方式: 'static'=使用静态URL, 'auto'=自动从当前域名获取
         urlMode: 'static',
-      
+
         // 是否展示后端联通性检测
         showCheckBackend: false,
-      
+
         // 静态URL模式下的基础URL (urlMode = 'static'时使用)
         // 支持字符串形式(单个API地址)或数组形式(多个备选API地址)
         // 多个地址时，会按顺序检测可用性，并使用第一个可用的地址
         staticBaseUrl: [],
-      
+
         // 自动获取模式配置 (urlMode = 'auto'时使用)
         autoConfig: {
             // 是否使用相同协议 (http/https)
@@ -47,11 +47,11 @@ export const config  = {
     // 是否启用中间件代理API请求
     // 设置为true时，所有API请求将通过中间件转发
     API_MIDDLEWARE_ENABLED: true,
-  
+
     //=======================================================
     // 中间件服务器URL (不含路径) 开源地址 https://github.com/codeman857/EZ-Encrypt-Middleware
     API_MIDDLEWARE_URL: 'https://d2ijw202als7c.ezdemo.xyz',
-  
+
     // 中间件加密KEY必须是16位的16进制字符串，必须和中间件key保持一致 在线生成地址 https://www.bejson.com/math/hex_gen/
     API_MIDDLEWARE_KEY: '4c6f8e5f9467dc71',
     //=======================================================
@@ -140,7 +140,7 @@ export const config  = {
     // 认证页面布局配置
     AUTH_LAYOUT_CONFIG: {
         // 布局类型: 'center' 为居中卡片布局, 'split' 为左右分栏布局
-        layoutType: 'center',
+        layoutType: 'split',
 
         // 左右分栏布局配置 (仅当 layoutType 为 'split' 时生效)
         splitLayout: {
@@ -187,7 +187,7 @@ export const config  = {
 
         // 是否启用周期折扣计算显示 (true=启用, false=禁用)
         enableDiscountCalculation: true, // 默认启用
-      
+
         // 是否启用优惠券功能 (true=启用, false=禁用)
         enableCoupons: true,
 
@@ -261,7 +261,7 @@ export const config  = {
 
         // 是否显示在线设备数量限制 (true=显示, false=隐藏，仅Xiao-V2board支持)
         showOnlineDevicesLimit: true,
-        
+
         // 是否显示导入订阅
         showImportSubscription: true,
     },
