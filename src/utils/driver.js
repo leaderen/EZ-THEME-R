@@ -116,12 +116,12 @@ export const languageSelectorSteps = [
   }
 ];
 
-// 帮助文档引导步骤
+// 帮助教程引导步骤
 export const helpDocumentSteps = [
   {
     element: '#help-document-card',
     popover: {
-      title: '帮助文档',
+      title: '帮助教程',
       description: '点击这里可以查看使用帮助和常见问题解答',
       side: 'bottom',
       align: 'center'

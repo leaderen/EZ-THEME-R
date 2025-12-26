@@ -15,13 +15,13 @@
 
         <div class="card-header">
 
-          <h2 class="card-title">{{ $t('docs.welcome.title') || '文档中心' }}</h2>
+          <h2 class="card-title">{{ $t('docs.welcome.title') || '教程中心' }}</h2>
 
         </div>
 
         <div class="card-body">
 
-          <p>{{ $t('docs.welcome.description') || '查找并阅读有关使用和配置的详细文档。' }}</p>
+          <p>{{ $t('docs.welcome.description') || '查找并阅读有关使用和配置的详细教程。' }}</p>
 
         </div>
 
@@ -163,7 +163,7 @@
 
             <IconLanguage :size="20" class="language-icon" />
 
-            <p class="hint-text">{{ $t('docs.languageHint', { currentLang: currentLanguage, alternateLang: alternateLanguage }) || `当前语言 ${currentLanguage} 暂无文档，请尝试切换到 ${alternateLanguage}` }}</p>
+            <p class="hint-text">{{ $t('docs.languageHint', { currentLang: currentLanguage, alternateLang: alternateLanguage }) || `当前语言 ${currentLanguage} 暂无教程，请尝试切换到 ${alternateLanguage}` }}</p>
 
           </div>
 
