@@ -26,7 +26,7 @@ export function getIpLocationInfo() {
 
   return request({
 
-    url: 'https://ipwho.is/',
+    url: 'https://myip.ipip.net/json',
 
     method: 'get',
 
@@ -171,27 +171,27 @@ export function getUserSubscribe() {
 
 
 export function checkInReq(data) {
-  
+
   return request({
-    
+
     url: '/user/checkin',
-    
+
     method: 'post',
-    
+
     data,
   });
-  
+
 }
 
 export function deleteUser(data) {
-  
+
   return request({
-    
+
     url: '/user/deleteAccount',
-    
+
     method: 'post',
-    
+
     data,
   });
-  
+
 }

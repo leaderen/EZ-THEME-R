@@ -15,35 +15,46 @@ const request = axios.create({
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
-    // 只有在加密模式下才添加 X-IV 头
-    ...(isEncrypted && { 'X-IV': randomIv() }),
   }
 });
 
 request.interceptors.request.use(
   config => {
-      config.baseURL = getApiBaseUrl();
-    
+    // 判断是否为第三方请求（baseURL为空或url以http开头）
+    const isThirdPartyRequest = config.baseURL === '' || (config.url && config.url.startsWith('http'));
+
+    // 第三方请求直接返回，不添加 X-IV 和其他内部逻辑
+    if (isThirdPartyRequest) {
+      return config;
+    }
+
+    // 只对内部请求添加 X-IV 加密头
+    if (isEncrypted) {
+      config.headers['X-IV'] = randomIv();
+    }
+
+    config.baseURL = getApiBaseUrl();
+
     if (window.EZ_CONFIG && window.EZ_CONFIG.API_MIDDLEWARE_ENABLED) {
       const originalUrl = config.url;
-      
+
       const path = originalUrl.startsWith("http") ? mapApiPath(config.url) : `${window.EZ_CONFIG.API_MIDDLEWARE_PATH}/${btoa(getEncrypUrl(config.url))}`
-      
+
       config.url = isEncrypted ? path : mapApiPath(config.url);
-      
+
       if (process.env.NODE_ENV === 'development') {
         console.log(`API路径映射: ${originalUrl} -> ${config.url}`);
       }
     }
     else if (window.EZ_CONFIG && window.EZ_CONFIG.API_BASE_URLS &&
-             Array.isArray(window.EZ_CONFIG.API_BASE_URLS) &&
-             window.EZ_CONFIG.API_BASE_URLS.length > 1) {
+      Array.isArray(window.EZ_CONFIG.API_BASE_URLS) &&
+      window.EZ_CONFIG.API_BASE_URLS.length > 1) {
       const availableApiUrl = getAvailableApiUrl();
       if (availableApiUrl) {
         config.baseURL = availableApiUrl;
       }
     }
-    
+
     if ((isXiaoV2board() || isXboard()) && config.method === 'post' && config.data) {
       const formData = new URLSearchParams();
       for (const key in config.data) {
@@ -51,13 +62,13 @@ request.interceptors.request.use(
           formData.append(key, config.data[key]);
         }
       }
-      
+
       config.data = formData;
       config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
     }
-    
+
     let authData = localStorage.getItem('auth_data');
-    
+
     if (!authData) {
       try {
         const { getCookie } = require('./auth');
@@ -66,13 +77,13 @@ request.interceptors.request.use(
         const cookieAuthData = document.cookie
           .split('; ')
           .find(row => row.startsWith('auth_data='));
-        
+
         if (cookieAuthData) {
           try {
             const encodedValue = cookieAuthData.split('=')[1];
             const decodedValue = decodeURIComponent(encodedValue);
             const parsedValue = JSON.parse(decodedValue);
-            
+
             const { SITE_CONFIG } = require('../utils/baseConfig');
             if (parsedValue && parsedValue.site === SITE_CONFIG.siteName) {
               authData = parsedValue.value;
@@ -83,17 +94,17 @@ request.interceptors.request.use(
         }
       }
     }
-    
+
     if (!authData && window.authDataInStorage) {
       authData = window.authDataInStorage;
     }
-    
+
     if (!authData) {
       const backupData = localStorage.getItem('cookie_auth_data');
       if (backupData) {
         try {
           const parsedValue = JSON.parse(backupData);
-          
+
           const { SITE_CONFIG } = require('../utils/baseConfig');
           if (parsedValue && parsedValue.site === SITE_CONFIG.siteName) {
             authData = parsedValue.value;
@@ -105,11 +116,11 @@ request.interceptors.request.use(
         }
       }
     }
-    
+
     if (authData) {
       config.headers['Authorization'] = authData;
     }
-    
+
     try {
       if (CUSTOM_HEADERS_CONFIG && CUSTOM_HEADERS_CONFIG.enabled && CUSTOM_HEADERS_CONFIG.headers) {
         const customHeaders = CUSTOM_HEADERS_CONFIG.headers;
@@ -123,7 +134,7 @@ request.interceptors.request.use(
     } catch (error) {
       console.error('应用自定义标头失败:', error);
     }
-    
+
     return config;
   },
   error => {
@@ -136,7 +147,7 @@ request.interceptors.response.use(
   response => {
     try {
       const res = response.data;
-      
+
       if (res && res.message === '未登录或登陆已过期') {
         console.log('检测到登录已过期，执行登出操作');
         const { forceLogout } = require('./auth');
@@ -144,7 +155,7 @@ request.interceptors.response.use(
         window.location.href = '/#/login';
         return Promise.reject(new Error(res.message));
       }
-      
+
       return res;
     } catch (err) {
       console.error('响应数据处理错误:', err);
@@ -153,7 +164,7 @@ request.interceptors.response.use(
   },
   error => {
     console.error('请求错误:', error);
-    
+
     if (error.response && error.response.data && error.response.data.message) {
       error.response.message = error.response.data.message;
     } else if (error.response) {
@@ -172,7 +183,7 @@ request.interceptors.response.use(
         error.message = '网络错误，请检查您的网络连接';
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
