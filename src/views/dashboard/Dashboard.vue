@@ -145,7 +145,7 @@
                 </button>
               </div>
             </div>
-            <div>
+            <div v-if="DASHBOARD_CONFIG.showCheckIn">
               <CheckIn @checkin-success="handleCheckinSuccess" />
             </div>
           </div>

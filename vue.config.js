@@ -16,7 +16,7 @@ const generateRandomFileName = (length = 8) => {
   for (let i = 0; i < length; i++) {
     name += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  
+
   const randowNumber = Math.floor(Math.random() * 1000).toString().padStart(3, "0")
   return `${randowNumber}.${name}.js`;
 };
@@ -31,11 +31,11 @@ module.exports = defineConfig({
   assetsDir: "static",
   lintOnSave: false,
   productionSourceMap: false,
-  
+
   configureWebpack: (config) => {
     config.experiments = { ...config.experiments, asyncWebAssembly: true, syncWebAssembly: true };
     config.resolve = { ...config.resolve, alias: { "@": path.resolve(__dirname, "src") } };
-    
+
     config.plugins.push(
       new webpack.DefinePlugin({
         __VUE_OPTIONS_API__: JSON.stringify(true),
@@ -43,7 +43,7 @@ module.exports = defineConfig({
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
       })
     );
-    
+
     if (isProd && enableConfigJS) {
       config.plugins.push({
         apply: (compiler) => {
@@ -51,44 +51,22 @@ module.exports = defineConfig({
             const configPath = path.resolve(__dirname, "src/config/index.js");
             const constantPath = path.resolve(__dirname, "src/config/constant.js");
             const distPath = path.resolve(compiler.options.output.path, extraScriptFileName);
-            
+
             try {
               let configContent = fs.readFileSync(configPath, "utf-8");
               let constantContent = fs.readFileSync(constantPath, "utf-8");
-              
-              // 从 config/index.js 中提取导入的函数名
-              const importMatch = configContent.match(/import\s+{([^}]+)}\s+from\s+["']@\/config\/constant["']/);
-              if (importMatch) {
-                const importedFunctions = importMatch[1].split(',').map(f => f.trim());
-                
-                // 为每个导入的函数创建定义
-                let functionsCode = '';
-                
-                for (const funcName of importedFunctions) {
-                  // 在 constantContent 中查找函数定义
-                  const funcRegex = new RegExp(`export\\s+const\\s+${funcName}\\s*=\\s*([\\s\\S]*?)(?=\\n\\s*export\\s+const|\\n\\s*$|$)`, 'g');
-                  const funcMatch = funcRegex.exec(constantContent);
-                  
-                  if (funcMatch) {
-                    let funcBody = funcMatch[1].trim();
-                    // 确保函数体以分号结尾
-                    if (!funcBody.endsWith(';')) {
-                      funcBody += ';';
-                    }
-                    
-                    // 添加函数定义
-                    functionsCode += `const ${funcName} = ${funcBody}\n`;
-                  }
-                }
-                
-                // 替换 import 语句为函数定义
-                configContent = configContent.replace(/import\s+{[^}]+}\s+from\s+["']@\/config\/constant["'];?\s*\n?/, functionsCode);
-              }
-              
+
+              // 将 constant.js 的内容去掉 export 关键字，直接内联到配置文件中
+              // 这比逐个正则提取函数体更可靠，不会因为函数格式变化而出错
+              let inlinedConstants = constantContent.replace(/export\s+const\s+/g, 'const ');
+
+              // 替换 import 语句为内联的函数/变量定义
+              configContent = configContent.replace(/import\s+{[^}]+}\s+from\s+["']@\/config\/constant["'];?\s*\n?/, inlinedConstants + '\n');
+
               // 原有的替换 export 语句的逻辑
               configContent = configContent.replace(/window\.EZ_CONFIG\s*=\s*config\s*;?/g, "");
               configContent = configContent.replace(/export\s+const\s+config\s*=/, "window.EZ_CONFIG =");
-              
+
               const obfuscated = JavaScriptObfuscator.obfuscate(configContent, {
                 compact: true,
                 controlFlowFlattening: true,
@@ -101,12 +79,12 @@ module.exports = defineConfig({
                 transformObjectKeys: true,
                 unicodeEscapeSequence: true
               }).getObfuscatedCode();
-              
+
               const fileContent = enableObfuscation ? obfuscated : configContent;
-              
+
               // 写入 dist
               fs.writeFileSync(distPath, fileContent, "utf-8");
-              
+
               console.log(`生成混淆独立 JS 文件: ${extraScriptFileName}`);
             } catch (err) {
               console.warn("生成独立 JS 文件失败:", err);
@@ -115,7 +93,7 @@ module.exports = defineConfig({
         },
       });
     }
-    
+
     if (isProd) {
       config.optimization = {
         ...config.optimization,
@@ -136,7 +114,7 @@ module.exports = defineConfig({
       };
     }
   },
-  
+
   chainWebpack: (config) => {
     if (isProd) {
       const pluginName = "html-index";
@@ -151,7 +129,7 @@ module.exports = defineConfig({
       });
     }
   },
-  
+
   css: {
     loaderOptions: {
       sass: {
@@ -161,10 +139,10 @@ module.exports = defineConfig({
       },
     },
   },
-  
+
   pages: {
     index: { entry: "src/main.js", template: "public/index.html", filename: "index.html", title: process.env.VUE_APP_TITLE },
   },
-  
+
   devServer: { client: { overlay: false } },
 });

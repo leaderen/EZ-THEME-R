@@ -34,7 +34,7 @@ export const ticketPopup = () => `<p>请您准确描述您的问题，再提交�
 
 export const getAppLink = (type) => {
   let link = `https://${window.location.hostname}`
-  
+
   switch (type) {
     case 'android':
       link += '/client/cmfa-2.11.16-meta-arm64-v8a-release.apk'
@@ -50,6 +50,7 @@ export const getAppLink = (type) => {
       break
     case 'linux':
       link = 'https://google.com/guide/linux'
+      break
     case 'openwrt':
       link = 'https://google.com/guide/openwrt'
       break
@@ -63,7 +64,7 @@ export const getThemeColor = () => {
   const CACHE_KEY = "myThemeColor";
   const cachedColor = localStorage.getItem(CACHE_KEY);
   if (cachedColor) return cachedColor;
-  
+
   // 精选调色板（去掉 #9e9d24，换成更舒服的绿色）
   const colors = [
     "#355cc2", // 主题蓝
@@ -94,7 +95,7 @@ export const getThemeColor = () => {
     "#e65100",
     "#b71c1c"
   ];
-  
+
   // 随机取一个
   const picked = colors[Math.floor(Math.random() * colors.length)];
   localStorage.setItem(CACHE_KEY, picked);

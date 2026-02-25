@@ -101,8 +101,11 @@
     <!-- 客服图标 -->
     <CustomerServiceIcon v-if="$route.path !== '/customer-service'" />
 
-    <!-- Crisp嵌入组件（第二种客服系统方案） -->
-    <CrispEmbed v-if="customerServiceConfig.embedMode === 'embed'" />
+    <!-- Crisp嵌入组件 -->
+    <CrispEmbed v-if="customerServiceConfig.embedMode === 'embed' && customerServiceConfig.type === 'crisp'" />
+
+    <!-- Chatwoot嵌入组件 -->
+    <ChatwootEmbed v-if="customerServiceConfig.embedMode === 'embed' && customerServiceConfig.type === 'chatwoot'" />
 
     <!-- 资源预加载组件 -->
     <ResourcePreloader />
@@ -135,6 +138,7 @@ import Announcement from '@/components/common/Announcement.vue';
 import CustomContextMenu from '@/components/common/CustomContextMenu.vue';
 import CustomerServiceIcon from '@/components/common/CustomerServiceIcon.vue';
 import CrispEmbed from '@/components/common/CrispEmbed.vue';
+import ChatwootEmbed from '@/components/common/ChatwootEmbed.vue';
 import ResourcePreloader from '@/components/common/ResourcePreloader.vue';
 import { IconGift, IconTag } from '@tabler/icons-vue';
 import NProgress from 'nprogress';
@@ -162,6 +166,7 @@ export default {
     CustomContextMenu,
     CustomerServiceIcon,
     CrispEmbed,
+    ChatwootEmbed,
     ResourcePreloader,
     IconGift,
     IconTag,

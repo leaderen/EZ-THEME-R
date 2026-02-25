@@ -475,11 +475,13 @@
 
           <div class="auth-footer">
 
+            <template v-if="AUTH_CONFIG.showThirdPartyLogin">
             <div class="auth-divider">
               <span class="auth-divider-text">{{ $t('auth.thirdPartyLogin') }}</span>
             </div>
 
             <ThirdPartyLogin :config="config" />
+            </template>
 
             <div class="auth-divider">
 
@@ -2372,6 +2374,8 @@ export default {
       goTo,
 
       handleMessage,
+
+      AUTH_CONFIG,
 
     };
 

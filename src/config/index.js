@@ -109,6 +109,9 @@ export const config = {
         // 是否自动勾选同意条款复选框 (true=自动勾选, false=默认不勾选)
         autoAgreeTerms: true,
 
+        // 是否显示第三方登录 (Google、Telegram 等) (true=显示, false=隐藏)
+        showThirdPartyLogin: true,
+
         // 验证码相关配置
         verificationCode: {
             // 是否在发送验证码后显示检查垃圾邮件的提示 (true=显示, false=不显示)
@@ -264,6 +267,9 @@ export const config = {
 
         // 是否显示导入订阅
         showImportSubscription: true,
+
+        // 是否显示签到功能 (true=显示, false=隐藏)
+        showCheckIn: true,
     },
 
     // 客户端下载配置
@@ -534,21 +540,43 @@ export const config = {
         // 是否启用客服系统
         enabled: true,
 
-        // 客服系统类型: 'crisp' 或 'other'
-        // 注意：当客服类型为crisp时，系统会自动向Crisp传递用户数据
+        // 客服系统类型: 'crisp', 'chatwoot' 或 'other'
+        // 注意：当客服类型为 crisp 或 chatwoot 时，系统会自动向客服系统传递用户数据
         // 包括：用户邮箱、套餐名称、到期时间、可用流量、用户余额
         type: 'crisp',
 
-        // 客服系统JS代码，请将您的客服系统提供的嵌入代码粘贴在这里
+        // 客服系统配置代码
+        // Crisp 格式: CRISP_WEBSITE_ID="xxxxxx-xxxxxx-xxxxxx-xxxxxx-xxxxxx"
+        // Chatwoot 格式: CHATWOOT_TOKEN="你的websiteToken" CHATWOOT_BASE_URL="https://app.chatwoot.com"
+        // Other 格式: 直接粘贴客服系统提供的嵌入代码
         customHtml: 'CRISP_WEBSITE_ID="xxxxxx-xxxxxx-xxxxxx-xxxxxx-xxxxxx"',
 
         // 客服系统嵌入模式: 'popup'=弹出式页面, 'embed'=嵌入到每个页面
         // 'popup'模式: 点击客服图标会跳转到单独的客服页面
-        // 'embed'模式: 客服窗口直接嵌入到每个页面中(仅支持Crisp)
+        // 'embed'模式: 客服窗口直接嵌入到每个页面中(支持Crisp和Chatwoot)
         embedMode: 'embed',
 
         // 是否在未登录状态下也显示客服图标
         showWhenNotLoggedIn: true,
+
+        // Chatwoot 自定义属性 key 映射（仅当 type 为 'chatwoot' 时生效）
+        // 这些 key 必须与 Chatwoot 后台 Settings → Custom Attributes 中创建的属性 key 一致
+        // 如果不需要某个属性，删掉该行或将其值设为 '' 即可跳过
+        chatwootAttributes: {
+            plan: 'plan',                       // 套餐名称
+            expires: 'expires',                 // 到期时间
+            traffic: 'traffic',                 // 剩余可用流量
+            balance: 'balance',                 // 用户余额
+            uuid: 'uuid',                       // 用户唯一标识
+            created_at: 'created_at',           // 注册时间
+            used_traffic: 'used_traffic',       // 已使用流量
+            total_traffic: 'total_traffic',     // 总流量额度
+            upload: 'upload',                   // 上传流量
+            download: 'download',               // 下载流量
+            telegram_id: 'telegram_id',         // Telegram 绑定ID（为空则显示"未绑定"）
+            invite_code: 'invite_code',         // 邀请人的邀请码
+            commission_balance: 'commission_balance'  // 佣金余额
+        },
 
         // 图标位置配置
         iconPosition: {

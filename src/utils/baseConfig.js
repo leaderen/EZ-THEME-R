@@ -2,7 +2,7 @@
  * 基础配置文件
  */
 
-import {getAvailableApiUrl} from '@/utils/apiAvailabilityChecker';
+import { getAvailableApiUrl } from '@/utils/apiAvailabilityChecker';
 
 const getConfig = (key, defaultValue) => {
     if (typeof window !== 'undefined' && window.EZ_CONFIG && window.EZ_CONFIG[key] !== undefined) {
@@ -13,7 +13,7 @@ const getConfig = (key, defaultValue) => {
 
 const mergeDeep = (target, source) => {
     if (!source) return target;
-    const output = {...target};
+    const output = { ...target };
 
     if (isObject(target) && isObject(source)) {
         Object.keys(source).forEach(key => {
@@ -65,9 +65,9 @@ export const getApiBaseUrl = () => {
             const formattedPath = middlewarePath.startsWith('/') ? middlewarePath : `/${middlewarePath}`;
 
             const middlewareKey = window.EZ_CONFIG.API_MIDDLEWARE_KEY;
-            
-            if(middlewareKey) {
-              return formattedUrl;
+
+            if (middlewareKey) {
+                return formattedUrl;
             }
             return formattedUrl + formattedPath;
         }
@@ -505,9 +505,12 @@ const DEFAULT_DASHBOARD_CONFIG = {
 
     // 是否显示在线设备数量限制 (true=显示, false=隐藏，仅Xiao-V2board支持)
     showOnlineDevicesLimit: true,
-    
+
     // 是否显示导入订阅
     showImportSubscription: true,
+
+    // 是否显示签到功能 (true=显示, false=隐藏)
+    showCheckIn: true,
 };
 
 export const DASHBOARD_CONFIG = mergeDeep(DEFAULT_DASHBOARD_CONFIG, getConfig('DASHBOARD_CONFIG'));
@@ -596,19 +599,19 @@ const DEFAULT_BACKGROUND_BALLS_CONFIG = [
     {
         size: '600px',
         background: 'var(--theme-color)',
-        position: {top: '-10%', left: '-10%'},
+        position: { top: '-10%', left: '-10%' },
         animationDuration: '25s'
     },
     {
         size: '500px',
         background: '#A747FE',
-        position: {top: '40%', right: '-5%'},
+        position: { top: '40%', right: '-5%' },
         animationDuration: '30s'
     },
     {
         size: '450px',
         background: '#37DEC9',
-        position: {bottom: '-10%', left: '20%'},
+        position: { bottom: '-10%', left: '20%' },
         animationDuration: '35s'
     }
 ];
@@ -882,7 +885,10 @@ export const AUTH_LAYOUT_CONFIG = mergeDeep(DEFAULT_AUTH_LAYOUT_CONFIG, getConfi
  */
 const DEFAULT_AUTH_CONFIG = {
     // 是否自动勾选同意条款复选框 (true=自动勾选, false=默认不勾选)
-    autoAgreeTerms: false
+    autoAgreeTerms: false,
+
+    // 是否显示第三方登录 (Google、Telegram 等) (true=显示, false=隐藏)
+    showThirdPartyLogin: true
 };
 
 export const AUTH_CONFIG = mergeDeep(DEFAULT_AUTH_CONFIG, getConfig('AUTH_CONFIG'));
